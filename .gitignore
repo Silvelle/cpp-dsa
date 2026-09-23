@@ -1,0 +1,14 @@
+# Build artifacts
+
+/build/
+/out/
+
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Typst temporary generated files
+*.tmp
