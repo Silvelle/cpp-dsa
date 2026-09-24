@@ -12,3 +12,14 @@
 
 # Typst temporary generated files
 *.tmp
+
+# Local assignment screenshots
+/docs/*/assets/tasks/
+
+# Local AI instructions
+/docs/*requirement*.txt
+/docs/*requirements*/
+
+**/AGENTS.md
+**/.agents/
+**/.codex/

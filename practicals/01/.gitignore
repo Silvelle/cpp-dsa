@@ -1,0 +1,6 @@
+build/
+compile_commands.json
+.cache/
+task*/data/
+task*/results/
+task*/src/main

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="330" viewBox="0 0 1500 330">
+  <rect width="1500" height="330" fill="#1e1e2e"/>
+  <g fill="#cdd6f4" font-family="Liberation Mono, monospace" font-size="27">
+    <text x="38" y="52">LINEAR SEARCH</text>
+    <text x="38" y="105">Algorithm       n         t, ms           C           M       T=C+M    Found</text>
+    <text x="38" y="148">---------------------------------------------------------------------------------</text>
+    <text x="38" y="195">Linear        100      0.004215         200         101         301      yes</text>
+    <text x="38" y="242">Linear       1000      0.013673        2000        1001        3001      yes</text>
+    <text x="38" y="289">Linear      10000      0.122325       20000       10001       30001      yes</text>
+  </g>
+</svg>

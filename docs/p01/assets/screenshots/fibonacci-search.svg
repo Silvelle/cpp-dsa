@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="330" viewBox="0 0 1500 330">
+  <rect width="1500" height="330" fill="#1e1e2e"/>
+  <g fill="#cdd6f4" font-family="Liberation Mono, monospace" font-size="27">
+    <text x="38" y="52">FIBONACCI SEARCH</text>
+    <text x="38" y="105">Algorithm       n         t, ms           C           M       T=C+M    Found</text>
+    <text x="38" y="148">---------------------------------------------------------------------------------</text>
+    <text x="38" y="195">Fibonacci     100      0.003534          39          70         109      yes</text>
+    <text x="38" y="242">Fibonacci    1000      0.001715          55          98         153      yes</text>
+    <text x="38" y="289">Fibonacci   10000      0.002322          66         119         185      yes</text>
+  </g>
+</svg>
