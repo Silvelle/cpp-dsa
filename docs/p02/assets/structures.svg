@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1450" height="1520" viewBox="0 0 1450 1520">
+  <rect width="1450" height="1520" fill="#1e1e2e"/>
+  <style>
+    .title { fill: #89b4fa; font: 700 25px 'DejaVu Sans Mono', monospace; }
+    .code { fill: #cdd6f4; font: 22px 'DejaVu Sans Mono', monospace; }
+    .comment { fill: #a6adc8; font: 22px 'DejaVu Sans Mono', monospace; }
+    .keyword { fill: #cba6f7; }
+    .type { fill: #89dceb; }
+  </style>
+
+  <text x="32" y="42" class="title">bank_account.hpp</text>
+  <text x="32" y="80" class="comment">// Полезные данные одной записи варианта 13.</text>
+  <text x="32" y="108" class="code"><tspan class="keyword">struct</tspan> BankAccount {</text>
+  <text x="32" y="136" class="code">  <tspan class="type">int</tspan> accountNumber{};</text>
+  <text x="32" y="164" class="code">  <tspan class="type">std::string</tspan> fullName;</text>
+  <text x="32" y="192" class="code">  <tspan class="type">std::string</tspan> address;</text>
+  <text x="32" y="220" class="code">};</text>
+
+  <line x1="32" y1="254" x2="1418" y2="254" stroke="#45475a" stroke-width="2"/>
+  <text x="32" y="296" class="title">hash_table.hpp</text>
+  <text x="32" y="334" class="code"><tspan class="keyword">using</tspan> std::size_t;</text>
+  <text x="32" y="362" class="code"><tspan class="keyword">class</tspan> HashTable {</text>
+  <text x="32" y="390" class="code"><tspan class="keyword">public</tspan>:</text>
+  <text x="32" y="418" class="code">  <tspan class="keyword">explicit</tspan> HashTable(size_t initialCapacity = 7);</text>
+  <text x="32" y="446" class="code"> </text>
+  <text x="32" y="474" class="code">  <tspan class="type">bool</tspan> insert(<tspan class="keyword">const</tspan> BankAccount &amp;account);</text>
+  <text x="32" y="502" class="code">  <tspan class="type">bool</tspan> erase(<tspan class="type">int</tspan> accountNumber);</text>
+  <text x="32" y="530" class="code">  BankAccount *find(<tspan class="type">int</tspan> accountNumber);</text>
+  <text x="32" y="558" class="code">  <tspan class="keyword">const</tspan> BankAccount *find(<tspan class="type">int</tspan> accountNumber) <tspan class="keyword">const</tspan>;</text>
+  <text x="32" y="586" class="code"> </text>
+  <text x="32" y="614" class="code">  std::vector&lt;BankAccount&gt; values() <tspan class="keyword">const</tspan>;</text>
+  <text x="32" y="642" class="code">  size_t size() <tspan class="keyword">const</tspan>;</text>
+  <text x="32" y="670" class="code">  size_t capacity() <tspan class="keyword">const</tspan>;</text>
+  <text x="32" y="698" class="code">  <tspan class="type">double</tspan> loadFactor() <tspan class="keyword">const</tspan>;</text>
+  <text x="32" y="726" class="code"> </text>
+  <text x="32" y="754" class="code"><tspan class="keyword">private</tspan>:</text>
+  <text x="32" y="782" class="code">  <tspan class="keyword">enum class</tspan> SlotState { Empty, Occupied, Deleted };</text>
+  <text x="32" y="810" class="code"> </text>
+  <text x="32" y="838" class="code">  <tspan class="keyword">struct</tspan> Slot {</text>
+  <text x="32" y="866" class="code">    <tspan class="type">int</tspan> key{};</text>
+  <text x="32" y="894" class="code">    <tspan class="type">size_t</tspan> dataIndex{};</text>
+  <text x="32" y="922" class="code">    SlotState state{SlotState::Empty};</text>
+  <text x="32" y="950" class="code">  };</text>
+  <text x="32" y="978" class="code"> </text>
+  <text x="32" y="1006" class="code">  <tspan class="keyword">static constexpr</tspan> <tspan class="type">double</tspan> maxLoadFactor_ = 0.65;</text>
+  <text x="32" y="1034" class="code"> </text>
+  <text x="32" y="1062" class="comment">  // Полезные данные и хеш-таблица хранятся в отдельных массивах.</text>
+  <text x="32" y="1090" class="code">  std::vector&lt;std::optional&lt;BankAccount&gt;&gt; data_;</text>
+  <text x="32" y="1118" class="code">  std::vector&lt;size_t&gt; freeDataIndices_;</text>
+  <text x="32" y="1146" class="code">  std::vector&lt;Slot&gt; slots_;</text>
+  <text x="32" y="1174" class="code">  <tspan class="type">size_t</tspan> size_{0};</text>
+  <text x="32" y="1202" class="code">  <tspan class="type">size_t</tspan> deletedCount_{0};</text>
+  <text x="32" y="1230" class="code"> </text>
+  <text x="32" y="1258" class="code">  <tspan class="keyword">static</tspan> <tspan class="type">bool</tspan> isPrime(size_t number);</text>
+  <text x="32" y="1286" class="code">  <tspan class="keyword">static</tspan> <tspan class="type">size_t</tspan> nextPrime(size_t number);</text>
+  <text x="32" y="1314" class="code">  <tspan class="type">size_t</tspan> primaryHash(<tspan class="type">int</tspan> key) <tspan class="keyword">const</tspan>;</text>
+  <text x="32" y="1342" class="code">  <tspan class="type">size_t</tspan> secondaryHash(<tspan class="type">int</tspan> key) <tspan class="keyword">const</tspan>;</text>
+  <text x="32" y="1370" class="code">  <tspan class="type">size_t</tspan> probeIndex(<tspan class="type">int</tspan> key, size_t attempt) <tspan class="keyword">const</tspan>;</text>
+  <text x="32" y="1398" class="code">  <tspan class="type">size_t</tspan> findIndex(<tspan class="type">int</tspan> key) <tspan class="keyword">const</tspan>;</text>
+  <text x="32" y="1426" class="code">  <tspan class="type">void</tspan> rehash(size_t requestedCapacity);</text>
+  <text x="32" y="1454" class="code">  <tspan class="type">void</tspan> insertWithoutResize(<tspan class="type">int</tspan> key, size_t dataIndex);</text>
+  <text x="32" y="1482" class="code">};</text>
+</svg>

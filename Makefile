@@ -1,116 +1,83 @@
 .DEFAULT_GOAL := build
 
-CXX ?= g++
-CXXFLAGS := -std=c++20 -Wall -Wextra -Wpedantic -O2
-
 P ?= 01
 T ?= 01
 
-# Path to tasks
 PRACTICAL := practicals/$(P)
-TASK := $(PRACTICAL)/task$(T)
+TASK_NAME := task$(T)
+TASK := $(PRACTICAL)/$(TASK_NAME)
+BUILD_DIR := $(PRACTICAL)/build
+TARGET_DIR := $(BUILD_DIR)/$(TASK_NAME)-build
+TARGET := $(TARGET_DIR)/$(TASK_NAME)
 
-SRC := $(wildcard $(TASK)/src/*.cpp)
-HEADERS := $(wildcard $(TASK)/include/*.hpp)
-TEST_SRC := $(wildcard $(TASK)/tests/*.cpp)
-LIB_SRC := $(filter-out $(TASK)/src/main.cpp,$(SRC))
-
-INCLUDES := \
-	-I$(TASK)/include \
-	-Icommon/include
-
-# C++ Build
-BUILD := build/p$(P)/task$(T)
-TARGET := $(BUILD)/task$(T)
-TEST_TARGET := $(BUILD)/tests
-
-
-# Experiment Results
-RESULTS := $(PRACTICAL)/results
-
-
-# Report
 DOCS := docs/p$(P)
+TASK_REPORT := $(DOCS)/$(TASK_NAME).typ
+
+ifneq ($(wildcard $(TASK_REPORT)),)
+REPORT := $(TASK_REPORT)
+REPORT_OUT := $(DOCS)/output/practical-$(P)-$(TASK_NAME)-report.pdf
+else
 REPORT := $(DOCS)/main.typ
-REPORT_OUT := $(DOCS)/output/report.pdf
+REPORT_OUT := $(DOCS)/output/practical-$(P)-report.pdf
+endif
 
+CPP_FILES := $(shell find "$(TASK)" -type f \( -name '*.cpp' -o -name '*.hpp' \) 2>/dev/null)
 
+.PHONY: configure build run test results report format verify clean help
 
-# Targets
-.PHONY: build run test results report format verify clean help
+configure:
+	@test -f "$(PRACTICAL)/CMakeLists.txt" || { \
+		echo "Practical $(P) does not exist: $(PRACTICAL)"; exit 1; \
+	}
+	@test -f "$(TASK)/CMakeLists.txt" || { \
+		echo "Task $(T) does not exist: $(TASK)"; exit 1; \
+	}
+	cmake -S "$(PRACTICAL)" -B "$(BUILD_DIR)"
 
+build: configure
+	cmake --build "$(BUILD_DIR)" --target "$(TASK_NAME)" --parallel
 
-# Default:
-# make P=01 T=01
-build:
-	@mkdir -p $(BUILD)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) $(SRC) -o $(TARGET)
-
-
-# Compile and run one task:
-# make run P=01 T=01
 run: build
-	$(TARGET)
+	@cd "$(TARGET_DIR)" && ./"$(TASK_NAME)"
 
+test: configure
+	cmake --build "$(BUILD_DIR)" --target "$(TASK_NAME)" --parallel
+	ctest --test-dir "$(BUILD_DIR)" --output-on-failure -R "^$(TASK_NAME)$$"
 
-# Run tests for one task:
-# make test P=01 T=01
-test:
-	@echo "Running tests for P=$(P), T=$(T)"
-	@if [ -n "$(strip $(TEST_SRC))" ]; then \
-		mkdir -p "$(BUILD)"; \
-		$(CXX) $(CXXFLAGS) $(INCLUDES) $(LIB_SRC) $(TEST_SRC) -o "$(TEST_TARGET)"; \
-		"$(TEST_TARGET)"; \
+# The task writes generated data and CSV files to its working directory.
+# Running from TARGET_DIR keeps those artifacts inside the build tree.
+results: run
+	@echo "Results: $(TARGET_DIR)/results"
+
+report:
+	@test -f "$(REPORT)" || { echo "Report source not found: $(REPORT)"; exit 1; }
+	@mkdir -p "$(dir $(REPORT_OUT))"
+	typst compile --root "$(CURDIR)" "$(REPORT)" "$(REPORT_OUT)"
+	@echo "Report: $(REPORT_OUT)"
+
+format:
+	@if [ -n "$(strip $(CPP_FILES))" ]; then \
+		clang-format -i $(CPP_FILES); \
 	else \
-		echo "No test sources found in $(TASK)/tests; build check only."; \
+		echo "No C++ files found in $(TASK)"; \
 	fi
 
-
-# Generate experimental results:
-# make results P=01 T=01
-results: build
-	@mkdir -p $(RESULTS)
-	$(TARGET) --experiment > $(RESULTS)/task$(T).csv
-
-
-# Compile report separately:
-# make report P=01
-report:
-	@mkdir -p $(DOCS)/output
-	typst compile $(REPORT) $(REPORT_OUT)
-
-
-# Format all C++ files in one task.
-format:
-	clang-format -i $(SRC) $(HEADERS) $(TEST_SRC)
-
-
-# Check C++ task only.
-verify: build test
+verify: test
 	@echo "P=$(P), T=$(T) passed verification"
 
-
-# Remove generated C++ build files.
 clean:
-	rm -rf build
-
+	rm -rf "$(BUILD_DIR)"
 
 help:
 	@echo ""
 	@echo "DSA repository commands"
 	@echo ""
-	@echo "C++:"
-	@echo "  make                     Build P=01 T=01"
-	@echo "  make build P=01 T=01     Build task"
-	@echo "  make run P=01 T=01       Build and run task"
-	@echo "  make test P=01 T=01      Run task tests"
-	@echo "  make results P=01 T=01   Generate experiment results"
-	@echo "  make format P=01 T=01    Format task C++ files"
-	@echo "  make verify P=01 T=01    Build and test task"
-	@echo ""
-	@echo "Report:"
-	@echo "  make report P=01         Compile practical report"
-	@echo ""
-	@echo "Other:"
-	@echo "  make clean               Remove C++ build files"
+	@echo "  make [build] P=01 T=01  Configure and build one task"
+	@echo "  make run P=01 T=01      Run it inside the build tree"
+	@echo "  make test P=01 T=01     Run its CTest entry"
+	@echo "  make results P=01 T=01  Generate CSV files in the build tree"
+	@echo "  make format P=01 T=01   Format task C++ sources"
+	@echo "  make verify P=01 T=01   Build and test one task"
+	@echo "  make report P=01 T=01   Compile a task report (or the practical report)"
+	@echo "  make clean P=01         Remove that practical's build tree"
 	@echo ""

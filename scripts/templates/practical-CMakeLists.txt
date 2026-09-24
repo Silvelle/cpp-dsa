@@ -15,7 +15,6 @@ target_include_directories(practical_common INTERFACE
 
 enable_testing()
 
-# Automatically include every task that has its own CMakeLists.txt.
 file(GLOB TASK_CMAKE_FILES CONFIGURE_DEPENDS
   RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_CURRENT_SOURCE_DIR}/task*/CMakeLists.txt"
